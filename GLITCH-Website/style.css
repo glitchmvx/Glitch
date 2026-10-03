@@ -1,0 +1,447 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #050505;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* NAVBAR */
+
+.navbar {
+    height: 80px;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #222;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(5,5,5,.92);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.logo img {
+    width: 120px;
+    display: block;
+}
+
+nav {
+    display: flex;
+    gap: 35px;
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+nav a {
+    transition: .2s;
+}
+
+nav a:hover {
+    color: #00e5c7;
+}
+
+/* HERO */
+
+.hero {
+    min-height: 100vh;
+    padding: 180px 8% 80px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    right: -150px;
+    top: 150px;
+    background: #00e5c7;
+    opacity: .04;
+    filter: blur(100px);
+}
+
+.hero-content {
+    max-width: 700px;
+    position: relative;
+    z-index: 2;
+}
+
+.eyebrow {
+    font-size: 12px;
+    letter-spacing: 5px;
+    color: #aaa;
+    margin-bottom: 25px;
+}
+
+h1 {
+    font-size: clamp(70px, 11vw, 150px);
+    line-height: .82;
+    letter-spacing: -6px;
+    font-weight: 900;
+}
+
+h1 span {
+    color: white;
+    text-shadow:
+        5px 0 #ff1744,
+        -5px 0 #00e5c7;
+}
+
+.hero-text {
+    max-width: 420px;
+    color: #aaa;
+    line-height: 1.6;
+    margin: 35px 0;
+}
+
+.btn {
+    display: inline-block;
+    border: 1px solid white;
+    padding: 16px 30px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    transition: .25s;
+}
+
+.btn:hover {
+    background: white;
+    color: black;
+}
+
+/* SHOP */
+
+.shop {
+    padding: 100px 5%;
+    border-top: 1px solid #222;
+}
+
+.section-title {
+    margin-bottom: 50px;
+}
+
+.section-title p,
+.about > p:first-child {
+    color: #777;
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+}
+
+.section-title h2 {
+    font-size: clamp(35px, 6vw, 70px);
+    letter-spacing: -2px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.product {
+    border: 1px solid #222;
+    padding: 15px;
+    background: #080808;
+}
+
+.product-image {
+    height: 420px;
+    background:
+        repeating-linear-gradient(
+            135deg,
+            #0b0b0b 0px,
+            #0b0b0b 2px,
+            #101010 2px,
+            #101010 4px
+        );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.product-image span {
+    color: #555;
+    font-size: 11px;
+    letter-spacing: 3px;
+}
+
+.product h3 {
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.product p {
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.product button {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid #444;
+    color: white;
+    cursor: pointer;
+    letter-spacing: 2px;
+}
+
+.product button:hover {
+    background: white;
+    color: black;
+}
+
+/* ABOUT */
+
+.about {
+    padding: 130px 8%;
+    border-top: 1px solid #222;
+}
+
+.about h2 {
+    font-size: clamp(45px, 8vw, 100px);
+    line-height: .9;
+    margin: 25px 0;
+}
+
+.about > p:last-child {
+    max-width: 500px;
+    color: #888;
+    line-height: 1.7;
+}
+
+/* FOOTER */
+
+footer {
+    padding: 60px 5%;
+    border-top: 1px solid #222;
+    text-align: center;
+}
+
+footer img {
+    width: 130px;
+    margin-bottom: 25px;
+}
+
+footer p {
+    color: #555;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .navbar {
+        height: 65px;
+        padding: 0 20px;
+    }
+
+    .logo img {
+        width: 95px;
+    }
+
+    nav {
+        gap: 15px;
+        font-size: 9px;
+    }
+
+    .hero {
+        min-height: 90vh;
+        padding: 130px 25px 60px;
+    }
+
+    h1 {
+        font-size: 70px;
+        letter-spacing: -4px;
+    }
+
+    .products {
+        grid-template-columns: 1fr;
+    }
+
+    .product-image {
+        height: 380px;
+    }
+
+    .shop {
+        padding: 80px 20px;
+    }
+
+    .about {
+        padding: 90px 25px;
+    }
+}.product-image {
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}.product-options {
+    margin-top: 15px;
+}
+
+.product-options label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #777;
+    margin-bottom: 8px;
+}
+
+.product-options select {
+    width: 100%;
+    padding: 14px;
+    background: #050505;
+    border: 1px solid #333;
+    color: white;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.product-options button {
+    width: 100%;
+}
+/* GAMES STORE */
+
+.games-store {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.game-store-card {
+    display: block;
+    border: 1px solid #222;
+    background: #080808;
+    overflow: hidden;
+}
+
+.game-store-image {
+    position: relative;
+    height: 360px;
+    background: #0b0b0b;
+    overflow: hidden;
+}
+
+.game-store-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.game-store-card:hover .game-store-image img {
+    transform: scale(1.04);
+}
+
+.game-store-image > span {
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+    padding: 8px 10px;
+    background: white;
+    color: black;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.game-store-info {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.game-store-info h3 {
+    font-size: 17px;
+}
+
+.game-store-info span {
+    color: #777;
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+.game-store-card:hover .game-store-info span {
+    color: #00e5c7;
+}
+
+.game-no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+
+@media (max-width: 700px) {
+
+    .games-store {
+        grid-template-columns: 1fr;
+    }
+
+    .game-store-image {
+        height: 320px;
+    }
+
+}.search-box {
+    margin-bottom: 25px;
+}
+
+#storeSearch {
+    width: 100%;
+    height: 58px;
+    padding: 0 20px;
+    background: #080808;
+    color: white;
+    border: 1px solid #333;
+    border-radius: 14px;
+    outline: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: .25s ease;
+}
+
+#storeSearch:focus {
+    border-color: #40f5ff;
+    box-shadow:
+        -2px 0 10px rgba(0, 230, 255, .45),
+         2px 0 10px rgba(255, 40, 130, .45);
+}
+
+#storeSearch::placeholder {
+    color: #666;
+}
