@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GLITCH — Control Panel</title>
+
+    <link rel="stylesheet" href="game.css">
+</head>
+
+<body>
+
+<header class="game-header">
+
+    <a href="admin.html">
+        ← BACK TO GAMES
+    </a>
+
+    <img src="Logo.png" alt="GLITCH">
+
+    <span>CONTROL PANEL</span>
+
+</header>
+
+
+<main class="game-container">
+
+    <div class="game-title">
+
+        <p>GAME / COLLECTION</p>
+
+        <h1 id="gameName">
+            GAME
+        </h1>
+
+    </div>
+
+
+    <div class="game-toolbar">
+
+        <h2>T-SHIRTS</h2>
+
+        <button id="addTshirtBtn">
+            + ADD T-SHIRT
+        </button>
+
+    </div>
+
+
+    <section id="tshirtForm" class="tshirt-form hidden">
+
+        <h2>ADD T-SHIRT</h2>
+
+        <label>
+            T-SHIRT NAME
+            <input type="text" id="tshirtName">
+        </label>
+
+        <label>
+            PRICE (DA)
+            <input type="number" id="tshirtPrice" min="0">
+        </label>
+
+        <label>
+            PRODUCT IMAGE
+            <input type="file" id="tshirtImage" accept="image/*">
+        </label>
+
+        <div class="sizes">
+
+            <p>SIZES</p>
+
+            <label><input type="checkbox" value="S"> S</label>
+            <label><input type="checkbox" value="M"> M</label>
+            <label><input type="checkbox" value="L"> L</label>
+            <label><input type="checkbox" value="XL"> XL</label>
+            <label><input type="checkbox" value="XXL"> XXL</label>
+
+        </div>
+
+        <label>
+            STOCK
+            <input type="number" id="tshirtStock" min="0">
+        </label>
+
+        <div class="form-actions">
+
+            <button id="saveTshirtBtn">
+                SAVE T-SHIRT
+            </button>
+
+            <button id="cancelTshirtBtn">
+                CANCEL
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <div id="tshirtsList" class="tshirts-list"></div>
+
+</main>
+
+
+<script src="admin-game.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GLITCH — Control Panel</title>
+
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<header class="admin-header">
+
+    <img src="Logo.png" alt="GLITCH">
+
+    <span>CONTROL PANEL</span>
+
+</header>
+
+
+<main class="admin-container">
+
+    <section class="admin-section">
+
+        <div class="section-heading">
+
+            <div>
+                <p>01 / MANAGEMENT</p>
+                <h1>GAMES</h1>
+            </div>
+
+            <button id="addGameBtn">
+                + ADD GAME
+            </button>
+
+        </div>
+
+
+        <!-- ADD / EDIT GAME FORM -->
+
+        <section id="gameForm" class="game-form hidden">
+
+            <h2 id="gameFormTitle">
+                ADD GAME
+            </h2>
+
+            <label>
+                GAME NAME
+
+                <input
+                    type="text"
+                    id="gameName"
+                    placeholder="Resident Evil"
+                >
+
+            </label>
+
+
+            <label>
+                GAME IMAGE
+
+                <input
+                    type="file"
+                    id="gameImage"
+                    accept="image/*"
+                >
+
+            </label>
+
+
+            <div class="form-actions">
+
+                <button id="saveGameBtn">
+                    SAVE GAME
+                </button>
+
+                <button id="cancelGameBtn">
+                    CANCEL
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <div id="gamesList" class="games-list">
+
+            <!-- Games appear here -->
+
+        </div>
+
+    </section>
+<section class="admin-section">
+    <div class="section-heading">
+        <div>
+            <p>02 / MANAGEMENT</p>
+            <h1>ORDERS</h1>
+        </div>
+    </div>
+
+    <div id="ordersList" class="orders-list">
+        <div class="empty-state">
+            <p>NO ORDERS YET</p>
+        </div>
+    </div>
+</section>
+</main>
+
+
+<script src="admin.js"></script>
+
+</body>
+
+</html>
