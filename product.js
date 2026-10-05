@@ -1,3 +1,11 @@
+import {
+    doc,
+    getDoc,
+    collection,
+    addDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+import { db } from "./firebase.js";
 const params = new URLSearchParams(window.location.search);
 
 const productId = params.get("id");
@@ -75,19 +83,52 @@ const deliveryPrices = {
    GET PRODUCT
 ========================= */
 
-const saved =
-    localStorage.getItem(`glitch_tshirts_${gameId}`);
+let product = null;
 
-const products = saved
-    ? JSON.parse(saved)
-    : [];
+async function loadProduct() {
 
-const product = products.find(
-    item => String(item.id) === String(productId)
-);
+    try {
+
+        const productRef = doc(
+            db,
+            "games",
+            gameId,
+            "tshirts",
+            productId
+        );
+
+        const productSnapshot =
+            await getDoc(productRef);
+
+        if (productSnapshot.exists()) {
+
+            product = {
+                id: productSnapshot.id,
+                ...productSnapshot.data()
+            };
+
+        }
+
+        renderProduct();
+
+    } catch (error) {
+
+        console.error(error);
+
+        productContent.innerHTML = `
+            <div class="empty-state">
+                <p>ERROR LOADING PRODUCT</p>
+            </div>
+        `;
+
+    }
+
+}
 
 
-if (!product) {
+function renderProduct() {
+
+    if (!product) {
 
     productContent.innerHTML = `
         <div class="empty-state">
@@ -495,7 +536,7 @@ if (!product) {
         .getElementById("orderForm")
         .addEventListener(
             "submit",
-            event => {
+            async event => {
 
                 event.preventDefault();
 
@@ -645,21 +686,10 @@ if (!product) {
                    SAVE ORDER
                 ========================= */
 
-                const orders =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "glitch_orders"
-                        )
-                    ) || [];
-
-
-                orders.unshift(order);
-
-
-                localStorage.setItem(
-                    "glitch_orders",
-                    JSON.stringify(orders)
-                );
+                await addDoc(
+    collection(db, "orders"),
+    order
+);
 
 
                 /* =========================
@@ -677,4 +707,4 @@ if (!product) {
             }
         );
 
-}
+}}loadProduct();

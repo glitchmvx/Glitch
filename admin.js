@@ -1,42 +1,185 @@
-const addGameBtn = document.getElementById("addGameBtn");
+import {
+    collection,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
+import { db } from "./firebase.js";
+
+console.log("ADMIN JS WORKING");
+
+
+const addGameBtn = document.getElementById("addGameBtn");
 const gameForm = document.getElementById("gameForm");
 const gameFormTitle = document.getElementById("gameFormTitle");
-
 const gameNameInput = document.getElementById("gameName");
 const gameImageInput = document.getElementById("gameImage");
-
 const saveGameBtn = document.getElementById("saveGameBtn");
 const cancelGameBtn = document.getElementById("cancelGameBtn");
-
 const gamesList = document.getElementById("gamesList");
 
-
-let games =
-    JSON.parse(localStorage.getItem("glitch_games")) || [];
-
+let games = [];
 let editingId = null;
 
+// ==============================
+// LOAD GAMES FROM FIREBASE
+// ==============================
 
-/* Make sure old games have an image field */
+async function loadGames() {
 
-games = games.map(game => ({
-    ...game,
-    image: game.image || ""
-}));
+    gamesList.innerHTML = `
+        <div class="empty-state">
+            <p>LOADING...</p>
+        </div>
+    `;
 
+    try {
 
-function saveGames() {
+        const snapshot = await getDocs(
+            collection(db, "games")
+        );
 
-    localStorage.setItem(
-        "glitch_games",
-        JSON.stringify(games)
-    );
+        games = [];
 
+        snapshot.forEach((item) => {
+
+            games.push({
+                id: item.id,
+                ...item.data()
+            });
+
+        });
+
+        renderGames();
+
+    } catch (error) {
+
+        console.error(error);
+
+        gamesList.innerHTML = `
+            <div class="empty-state">
+                <p>ERROR LOADING GAMES</p>
+            </div>
+        `;
+
+        alert("Firebase error. Check the browser console.");
+
+    }
 }
 
 
-/* OPEN ADD FORM */
+// ==============================
+// SAVE GAME
+// ==============================
+
+saveGameBtn.addEventListener("click", async () => {
+
+    const name = gameNameInput.value.trim();
+    const file = gameImageInput.files[0];
+
+    if (!name) {
+        alert("Enter game name.");
+        return;
+    }
+
+
+    saveGameBtn.disabled = true;
+    saveGameBtn.textContent = "SAVING...";
+
+
+    try {
+
+        // EDIT WITHOUT NEW IMAGE
+
+        if (editingId && !file) {
+
+            const gameRef = doc(
+                db,
+                "games",
+                editingId
+            );
+
+            await updateDoc(gameRef, {
+                name: name
+            });
+
+        }
+
+
+        // EDIT WITH NEW IMAGE
+
+        else if (editingId && file) {
+
+            const image = await fileToDataURL(file);
+
+            const gameRef = doc(
+                db,
+                "games",
+                editingId
+            );
+
+            await updateDoc(gameRef, {
+                name: name,
+                image: image
+            });
+
+        }
+
+
+        // ADD NEW GAME
+
+        else {
+
+            if (!file) {
+                alert("Select a game image.");
+                saveGameBtn.disabled = false;
+                saveGameBtn.textContent = "SAVE GAME";
+                return;
+            }
+
+            const image = await fileToDataURL(file);
+
+            await addDoc(
+                collection(db, "games"),
+                {
+                    name: name,
+                    image: image,
+                    createdAt: Date.now()
+                }
+            );
+
+        }
+
+
+        await loadGames();
+
+        gameForm.classList.add("hidden");
+        clearForm();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not save game.\n\n" +
+            error.message
+        );
+
+    }
+
+
+    saveGameBtn.disabled = false;
+    saveGameBtn.textContent = "SAVE GAME";
+
+});
+
+
+// ==============================
+// ADD GAME BUTTON
+// ==============================
 
 addGameBtn.addEventListener("click", () => {
 
@@ -53,7 +196,9 @@ addGameBtn.addEventListener("click", () => {
 });
 
 
-/* CANCEL */
+// ==============================
+// CANCEL
+// ==============================
 
 cancelGameBtn.addEventListener("click", () => {
 
@@ -64,119 +209,9 @@ cancelGameBtn.addEventListener("click", () => {
 });
 
 
-/* SAVE */
-
-saveGameBtn.addEventListener("click", () => {
-
-    const name = gameNameInput.value.trim();
-
-    const file = gameImageInput.files[0];
-
-
-    if (!name) {
-
-        alert("Enter game name.");
-
-        return;
-
-    }
-
-
-    /* EDIT WITHOUT NEW IMAGE */
-
-    if (editingId && !file) {
-
-        const game = games.find(
-            item => item.id === editingId
-        );
-
-        if (!game) return;
-
-        game.name = name;
-
-        saveGames();
-
-        renderGames();
-
-        gameForm.classList.add("hidden");
-
-        clearForm();
-
-        return;
-
-    }
-
-
-    /* NEW GAME NEEDS IMAGE */
-
-    if (!file) {
-
-        alert("Select a game image.");
-
-        return;
-
-    }
-
-
-    const reader = new FileReader();
-
-
-    reader.onload = function () {
-
-        const image = reader.result;
-
-
-        /* EDIT */
-
-        if (editingId) {
-
-            const game = games.find(
-                item => item.id === editingId
-            );
-
-            if (!game) return;
-
-            game.name = name;
-
-            game.image = image;
-
-        }
-
-
-        /* ADD */
-
-        else {
-
-            games.push({
-
-                id: Date.now(),
-
-                name: name,
-
-                image: image
-
-            });
-
-        }
-
-
-        saveGames();
-
-        renderGames();
-
-        gameForm.classList.add("hidden");
-
-        clearForm();
-
-    };
-
-
-    reader.readAsDataURL(file);
-
-});
-
-
-/* RENDER */
+// ==============================
+// RENDER GAMES
+// ==============================
 
 function renderGames() {
 
@@ -192,20 +227,17 @@ function renderGames() {
         `;
 
         return;
-
     }
 
 
     games.forEach((game) => {
 
-        const card =
-            document.createElement("div");
+        const card = document.createElement("div");
 
         card.className = "game-card";
 
 
         const imageHTML = game.image
-
             ? `
                 <div class="game-image">
                     <img
@@ -214,7 +246,6 @@ function renderGames() {
                     >
                 </div>
             `
-
             : `
                 <div class="game-image">
                     <div class="game-no-image">
@@ -235,13 +266,13 @@ function renderGames() {
                 <div class="game-actions">
 
                     <button
-                        onclick="event.stopPropagation(); editGame(${game.id})"
+                        data-edit="${game.id}"
                     >
                         EDIT
                     </button>
 
                     <button
-                        onclick="event.stopPropagation(); deleteGame(${game.id})"
+                        data-delete="${game.id}"
                     >
                         DELETE
                     </button>
@@ -249,8 +280,29 @@ function renderGames() {
                 </div>
 
             </div>
-
         `;
+
+
+        card
+            .querySelector("[data-edit]")
+            .addEventListener("click", (event) => {
+
+                event.stopPropagation();
+
+                editGame(game.id);
+
+            });
+
+
+        card
+            .querySelector("[data-delete]")
+            .addEventListener("click", (event) => {
+
+                event.stopPropagation();
+
+                deleteGame(game.id);
+
+            });
 
 
         card.addEventListener("click", () => {
@@ -267,12 +319,15 @@ function renderGames() {
 }
 
 
-/* OPEN GAME */
+// ==============================
+// OPEN GAME
+// ==============================
 
 function openGame(id) {
 
-    const game =
-        games.find(item => item.id === id);
+    const game = games.find(
+        item => item.id === id
+    );
 
     if (!game) return;
 
@@ -283,23 +338,24 @@ function openGame(id) {
 }
 
 
-/* EDIT GAME */
+// ==============================
+// EDIT GAME
+// ==============================
 
 function editGame(id) {
 
-    const game =
-        games.find(item => item.id === id);
+    const game = games.find(
+        item => item.id === id
+    );
 
     if (!game) return;
 
 
     editingId = id;
 
-
     gameNameInput.value = game.name;
 
     gameImageInput.value = "";
-
 
     gameFormTitle.textContent = "EDIT GAME";
 
@@ -309,46 +365,79 @@ function editGame(id) {
 
 
     window.scrollTo({
-
         top: 0,
-
         behavior: "smooth"
+    });
+
+}
+
+
+// ==============================
+// DELETE GAME
+// ==============================
+
+async function deleteGame(id) {
+
+    const game = games.find(
+        item => item.id === id
+    );
+
+    if (!game) return;
+
+
+    if (!confirm(`Delete "${game.name}"?`)) {
+        return;
+    }
+
+
+    try {
+
+        await deleteDoc(
+            doc(db, "games", id)
+        );
+
+        await loadGames();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not delete game.\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+// ==============================
+// FILE → DATA URL
+// ==============================
+
+function fileToDataURL(file) {
+
+    return new Promise((resolve, reject) => {
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
 
     });
 
 }
 
 
-/* DELETE GAME */
-
-function deleteGame(id) {
-
-    const game =
-        games.find(item => item.id === id);
-
-    if (!game) return;
-
-
-    if (!confirm(`Delete "${game.name}"?`)) {
-
-        return;
-
-    }
-
-
-    games = games.filter(
-        item => item.id !== id
-    );
-
-
-    saveGames();
-
-    renderGames();
-
-}
-
-
-/* CLEAR FORM */
+// ==============================
+// CLEAR FORM
+// ==============================
 
 function clearForm() {
 
@@ -360,71 +449,149 @@ function clearForm() {
 
 }
 
-function renderOrders() {
-    const ordersList = document.getElementById("ordersList");
 
-    if (!ordersList) return;
+// ==============================
+// START
+// ==============================
+// ==============================
+// LOAD ORDERS FROM FIREBASE
+// ==============================
 
-    const orders =
-        JSON.parse(localStorage.getItem("glitch_orders")) || [];
+async function renderOrders() {
 
-    ordersList.innerHTML = "";
+    ordersList.innerHTML = `
+        <div class="empty-state">
+            <p>LOADING...</p>
+        </div>
+    `;
 
-    if (orders.length === 0) {
+    try {
+
+        const snapshot = await getDocs(
+            collection(db, "orders")
+        );
+
+        ordersList.innerHTML = "";
+
+        if (snapshot.empty) {
+
+            ordersList.innerHTML = `
+                <div class="empty-state">
+                    <p>NO ORDERS YET</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        snapshot.forEach((item) => {
+
+            const order = {
+                id: item.id,
+                ...item.data()
+            };
+
+            const card = document.createElement("div");
+
+            card.className = "order-card";
+
+            card.innerHTML = `
+                <div class="order-info">
+
+                    <h3>${order.productName || "PRODUCT"}</h3>
+
+                    <p>
+                        <strong>NAME:</strong>
+                        ${order.name || "-"}
+                    </p>
+
+                    <p>
+                        <strong>PHONE:</strong>
+                        ${order.phone || "-"}
+                    </p>
+
+                    <p>
+                        <strong>SIZE:</strong>
+                        ${order.size || "-"}
+                    </p>
+
+                    <p>
+                        <strong>WILAYA:</strong>
+                        ${order.wilaya || "-"}
+                    </p>
+
+                    <p>
+                        <strong>COMMUNE:</strong>
+                        ${order.commune || "-"}
+                    </p>
+
+                    <p>
+                        <strong>DELIVERY:</strong>
+                        ${order.deliveryType || "-"}
+                    </p>
+
+                    <p>
+                        <strong>TOTAL:</strong>
+                        ${order.total || 0} DA
+                    </p>
+
+                    <p>
+                        <strong>DATE:</strong>
+                        ${order.date || "-"}
+                    </p>
+
+                </div>
+
+                <button data-delete-order="${order.id}">
+                    DELETE
+                </button>
+            `;
+
+            card
+                .querySelector("[data-delete-order]")
+                .addEventListener("click", async () => {
+
+                    if (!confirm("Delete this order?")) {
+                        return;
+                    }
+
+                    try {
+
+                        await deleteDoc(
+                            doc(db, "orders", order.id)
+                        );
+
+                        await renderOrders();
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        alert(
+                            "Could not delete order.\n\n" +
+                            error.message
+                        );
+
+                    }
+
+                });
+
+            ordersList.appendChild(card);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
         ordersList.innerHTML = `
             <div class="empty-state">
-                <p>NO ORDERS YET</p>
+                <p>ERROR LOADING ORDERS</p>
             </div>
         `;
-        return;
+
     }
-
-    orders.forEach(order => {
-        const card = document.createElement("div");
-
-        card.className = "order-card";
-
-        card.innerHTML = `
-            <div class="order-info">
-                <h3>${order.productName}</h3>
-
-                <p><strong>NAME:</strong> ${order.name}</p>
-                <p><strong>PHONE:</strong> ${order.phone}</p>
-                <p><strong>WILAYA:</strong> ${order.wilaya}</p>
-                <p><strong>COMMUNE:</strong> ${order.commune}</p>
-                <p><strong>SIZE:</strong> ${order.size}</p>
-                <p><strong>DELIVERY:</strong> ${order.deliveryType}</p>
-
-                <p><strong>PRODUCT:</strong> ${order.productPrice} DA</p>
-                <p><strong>DELIVERY PRICE:</strong> ${order.deliveryPrice} DA</p>
-
-                <h4>TOTAL: ${order.total} DA</h4>
-            </div>
-
-            <button onclick="deleteOrder(${order.id})">
-                DELETE
-            </button>
-        `;
-
-        ordersList.appendChild(card);
-    });
 }
-
-function deleteOrder(id) {
-    const orders =
-        JSON.parse(localStorage.getItem("glitch_orders")) || [];
-
-    const updatedOrders =
-        orders.filter(order => order.id !== id);
-
-    localStorage.setItem(
-        "glitch_orders",
-        JSON.stringify(updatedOrders)
-    );
-
-    renderOrders();
-}
-
-renderGames();
+loadGames();
 renderOrders();
-renderGames();
+ordersList = document.getElementById("ordersList");

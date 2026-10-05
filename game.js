@@ -1,22 +1,91 @@
+import {
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+import { db } from "./firebase.js";
+
+
 const params = new URLSearchParams(window.location.search);
 
 const gameId = params.get("id");
 const gameName = params.get("name");
 
-const gameNameElement = document.getElementById("gameName");
-const tshirtsList = document.getElementById("tshirtsList");
+const gameNameElement =
+    document.getElementById("gameName");
 
-gameNameElement.textContent = gameName || "GAME";
-
-const saved =
-    localStorage.getItem(`glitch_tshirts_${gameId}`);
-
-const tshirts = saved ? JSON.parse(saved) : [];
+const tshirtsList =
+    document.getElementById("tshirtsList");
 
 
-function renderTshirts() {
+gameNameElement.textContent =
+    gameName || "GAME";
+
+
+// ==============================
+// LOAD T-SHIRTS
+// ==============================
+
+async function loadTshirts() {
+
+    tshirtsList.innerHTML = `
+        <div class="empty-state">
+            <p>LOADING...</p>
+        </div>
+    `;
+
+
+    try {
+
+        const snapshot = await getDocs(
+            collection(
+                db,
+                "games",
+                gameId,
+                "tshirts"
+            )
+        );
+
+
+        const tshirts = [];
+
+
+        snapshot.forEach((item) => {
+
+            tshirts.push({
+                id: item.id,
+                ...item.data()
+            });
+
+        });
+
+
+        renderTshirts(tshirts);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        tshirtsList.innerHTML = `
+            <div class="empty-state">
+                <p>ERROR LOADING T-SHIRTS</p>
+            </div>
+        `;
+
+    }
+
+}
+
+
+// ==============================
+// RENDER
+// ==============================
+
+function renderTshirts(tshirts) {
 
     tshirtsList.innerHTML = "";
+
 
     if (tshirts.length === 0) {
 
@@ -27,6 +96,7 @@ function renderTshirts() {
         `;
 
         return;
+
     }
 
 
@@ -34,7 +104,9 @@ function renderTshirts() {
 
         const card = document.createElement("a");
 
-        card.className = "store-tshirt-card";
+        card.className =
+            "store-tshirt-card";
+
 
         card.href =
             `product.html?id=${tshirt.id}&game=${gameId}`;
@@ -68,8 +140,14 @@ function renderTshirts() {
 
 
         tshirtsList.appendChild(card);
+
     });
+
 }
 
 
-renderTshirts();
+// ==============================
+// START
+// ==============================
+
+loadTshirts();
