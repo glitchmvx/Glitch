@@ -501,10 +501,10 @@ async function renderOrders() {
 
         snapshot.forEach((item) => {
 
-            const order = {
-                id: item.id,
-                ...item.data()
-            };
+           const order = {
+    ...item.data(),
+    id: item.id
+};
 
             const card = document.createElement("div");
 
