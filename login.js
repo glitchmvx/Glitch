@@ -38,8 +38,7 @@ loginForm.addEventListener("submit", async (event) => {
 
         console.error(error);
 
-        errorBox.textContent =
-            "Invalid email or password.";
+       errorBox.textContent = error.code + " — " + error.message;
 
         loginBtn.disabled = false;
         loginBtn.textContent = "LOGIN";
