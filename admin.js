@@ -25,9 +25,19 @@ const gameImageInput = document.getElementById("gameImage");
 const saveGameBtn = document.getElementById("saveGameBtn");
 const cancelGameBtn = document.getElementById("cancelGameBtn");
 const gamesList = document.getElementById("gamesList");
-
+const ordersList = document.getElementById("ordersList");
 let games = [];
 let editingId = null;
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    loadGames();
+    renderOrders();
+});
 
 // ==============================
 // LOAD GAMES FROM FIREBASE
@@ -597,6 +607,4 @@ async function renderOrders() {
 
     }
 }
-loadGames();
-renderOrders();
-ordersList = document.getElementById("ordersList");
+
