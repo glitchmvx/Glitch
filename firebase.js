@@ -1,8 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBJ--I43JpzjxV9uozSXRuDKQS_dthSIPo",
+    apiKey: "YOUR_API_KEY",
     authDomain: "glitch-21eeb.firebaseapp.com",
     projectId: "glitch-21eeb",
     storageBucket: "glitch-21eeb.firebasestorage.app",
@@ -11,6 +12,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-export { db };
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+export { db, auth };
