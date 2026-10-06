@@ -329,6 +329,8 @@ footer p {
 }
 /* GAMES STORE */
 
+/* GAMES STORE */
+
 .games-store {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -344,7 +346,7 @@ footer p {
 
 .game-store-image {
     position: relative;
-    height: 360px;
+    aspect-ratio: 3 / 4;
     background: #0b0b0b;
     overflow: hidden;
 }
@@ -363,47 +365,55 @@ footer p {
 
 .game-store-image > span {
     position: absolute;
-    left: 15px;
-    bottom: 15px;
-    padding: 8px 10px;
+    left: 8px;
+    bottom: 8px;
+    padding: 6px 7px;
     background: white;
     color: black;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: bold;
     letter-spacing: 1px;
 }
 
 .game-store-info {
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
+    padding: 12px;
+    display: block;
 }
 
 .game-store-info h3 {
-    font-size: 17px;
+    font-size: 13px;
+    margin-bottom: 6px;
 }
 
 .game-store-info span {
     color: #777;
-    font-size: 9px;
+    font-size: 8px;
     letter-spacing: 1px;
 }
 
-.game-store-card:hover .game-store-info span {
-    color: #00e5c7;
-}
+/* MOBILE */
 
-.game-no-image {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #444;
-    font-size: 10px;
-    letter-spacing: 2px;
+
+
+    .game-store-info {
+        padding: 9px;
+    }
+
+    .game-store-info h3 {
+        font-size: 11px;
+    }
+
+    .game-store-info span {
+        font-size: 7px;
+    }
+
+    /* منع Zoom في حقول الكتابة على الهاتف */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
 }
 
 
