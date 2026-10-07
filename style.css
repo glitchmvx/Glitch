@@ -853,3 +853,11 @@ footer p {
     }
 
 }
+.game-store-card {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.game-store-image {
+    border-radius: 14px 14px 0 0;
+}
