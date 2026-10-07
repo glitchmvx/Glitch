@@ -625,7 +625,7 @@ a {
     #orderForm input,
     #orderForm select {
         height: 48px;
-        font-size: 12px;
+        font-size: 16px !important;
     }
 }/* DELIVERY FIX */
 
