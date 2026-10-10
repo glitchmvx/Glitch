@@ -20,7 +20,7 @@ const productContent =
 ========================= */
 
 const deliveryPrices = {
-    "Adrar 1": { home: 1500, office: 1000 },
+    "Adrar": { home: 1500, office: 1000 },
     "Chlef": { home: 800, office: 500 },
     "Laghouat": { home: 1000, office: 600 },
     "Oum El Bouaghi": { home: 800, office: 500 },
